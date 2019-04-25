@@ -47,7 +47,11 @@ def build_data(data, dump_path, max_seq_len=MAX_SEQ_LEN, is_train=True, tolower=
             _truncate_seq_pair(premise, hypothesis, max_seq_len - 3)
             input_ids =bert_tokenizer.convert_tokens_to_ids(['[CLS]'] + hypothesis + ['[SEP]'] + premise + ['[SEP]'])
             type_ids = [0] * ( len(hypothesis) + 2) + [1] * (len(premise) + 1)
-            features = {'uid': ids, 'label': label, 'token_id': input_ids, 'type_id': type_ids}
+            try:
+                diff = sample['difficulty']
+                features = {'uid': ids, 'label': label, 'token_id': input_ids, 'type_id': type_ids, 'difficulty': diff}
+            except:
+                features = {'uid': ids, 'label': label, 'token_id': input_ids, 'type_id': type_ids}
             writer.write('{}\n'.format(json.dumps(features)))
 
 def build_qnli(data, dump_path, max_seq_len=MAX_SEQ_LEN, is_train=True, tolower=True, gold_path=None):
@@ -98,10 +102,11 @@ def main(args):
     ######################################
     # SNLI/SciTail Tasks
     ######################################
+    '''
     scitail_train_path = os.path.join(root, 'SciTail/tsv_format/scitail_1.0_train.tsv')
     scitail_dev_path = os.path.join(root, 'SciTail/tsv_format/scitail_1.0_dev.tsv')
     scitail_test_path = os.path.join(root, 'SciTail/tsv_format/scitail_1.0_test.tsv')
-
+    '''
     snli_train_path = os.path.join(root, 'SNLI/train.tsv')
     snli_dev_path = os.path.join(root, 'SNLI/dev.tsv')
     snli_test_path = os.path.join(root, 'SNLI/test.tsv')
@@ -109,6 +114,7 @@ def main(args):
     ######################################
     # GLUE tasks
     ######################################
+    '''
     multi_train_path =  os.path.join(root, 'MNLI/train.tsv')
     multi_dev_matched_path = os.path.join(root, 'MNLI/dev_matched.tsv')
     multi_dev_mismatched_path = os.path.join(root, 'MNLI/dev_mismatched.tsv')
@@ -156,14 +162,14 @@ def main(args):
     logger.info('Loaded {} SciTail train samples'.format(len(scitail_train_data)))
     logger.info('Loaded {} SciTail dev samples'.format(len(scitail_dev_data)))
     logger.info('Loaded {} SciTail test samples'.format(len(scitail_test_data)))
-
+    '''
     snli_train_data = load_snli(snli_train_path, GLOBAL_MAP['snli'])
     snli_dev_data = load_snli(snli_dev_path, GLOBAL_MAP['snli'])
     snli_test_data = load_snli(snli_test_path, GLOBAL_MAP['snli'])
     logger.info('Loaded {} SNLI train samples'.format(len(snli_train_data)))
     logger.info('Loaded {} SNLI dev samples'.format(len(snli_dev_data)))
     logger.info('Loaded {} SNLI test samples'.format(len(snli_test_data)))
-
+    '''
     multinli_train_data = load_mnli(multi_train_path, GLOBAL_MAP['snli'])
     multinli_matched_dev_data = load_mnli(multi_dev_matched_path, GLOBAL_MAP['snli'])
     multinli_mismatched_dev_data = load_mnli(multi_dev_mismatched_path, GLOBAL_MAP['snli'])
@@ -238,11 +244,11 @@ def main(args):
     logger.info('Loaded {} COLA train samples'.format(len(cola_train_data)))
     logger.info('Loaded {} COLA dev samples'.format(len(cola_dev_data)))
     logger.info('Loaded {} COLA test samples'.format(len(cola_test_data)))
-
+    '''
     mt_dnn_root = os.path.join(root, 'mt_dnn')
     if not os.path.isdir(mt_dnn_root):
         os.mkdir(mt_dnn_root)
-
+    '''
     # BUILD SciTail
     scitail_train_fout = os.path.join(mt_dnn_root, 'scitail_train.json')
     scitail_dev_fout = os.path.join(mt_dnn_root, 'scitail_dev.json')
@@ -251,7 +257,7 @@ def main(args):
     build_data(scitail_dev_data, scitail_dev_fout)
     build_data(scitail_test_data, scitail_test_fout)
     logger.info('done with scitail')
-
+    '''
     # BUILD SNLI
     snli_train_fout = os.path.join(mt_dnn_root, 'snli_train.json')
     snli_dev_fout = os.path.join(mt_dnn_root, 'snli_dev.json')
@@ -260,7 +266,7 @@ def main(args):
     build_data(snli_dev_data, snli_dev_fout)
     build_data(snli_test_data, snli_test_fout)
     logger.info('done with snli')
-
+    '''
     # BUILD MNLI
     multinli_train_fout = os.path.join(mt_dnn_root, 'mnli_train.json')
     multinli_matched_dev_fout = os.path.join(mt_dnn_root, 'mnli_matched_dev.json')
@@ -346,7 +352,7 @@ def main(args):
     build_data_single(cola_dev_data, cola_dev_fout)
     build_data_single(cola_test_data, cola_test_fout)
     logger.info('done with cola')
-
+    ''' 
 if __name__ == '__main__':
     args = parse_args()
     main(args)

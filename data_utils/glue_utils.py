@@ -22,6 +22,13 @@ def load_scitail(file, label_dict):
 def load_snli(file, label_dict, header=True):
     rows = []
     cnt = 0
+    if 'train' in file:
+        difficulties = dict() 
+        diff_file = '/mnt/nfs/work1/hongyu/lalor/crowd_results/response_patterns/lstm_snli_train.csv.diffs'
+        with open(diff_file, 'r') as dfile:
+            for line in dfile:
+                l = line.split(',')
+                difficulties[l[0]] = eval(l[1]) 
     with open(file, encoding="utf8") as f:
         for line in f:
             if header:
@@ -34,7 +41,14 @@ def load_snli(file, label_dict, header=True):
             if lab is None:
                 import pdb; pdb.set_trace()
             lab = 0 if lab is None else lab
-            sample = {'uid': blocks[0], 'premise': blocks[7], 'hypothesis': blocks[8], 'label': lab}
+            if 'train' in file:
+                try:
+                    diff = difficulties[blocks[2]]
+                    sample = {'uid': blocks[0], 'premise': blocks[7], 'hypothesis': blocks[8], 'label': lab, 'difficulty': diff}
+                except:
+                    continue 
+            else:
+                sample = {'uid': blocks[0], 'premise': blocks[7], 'hypothesis': blocks[8], 'label': lab}
             rows.append(sample)
             cnt += 1
     return rows

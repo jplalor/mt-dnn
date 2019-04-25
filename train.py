@@ -178,6 +178,7 @@ def main():
 
         train_path = os.path.join(data_dir, '{}_train.json'.format(dataset))
         logger.info('Loading {} as task {}'.format(train_path, task_id))
+        # here-ish is where I'll need to load the SNLI difficulty values for filtering 
         train_data = BatchGen(BatchGen.load(train_path, True, pairwise=pw_task, maxlen=args.max_seq_len),
                                 batch_size=batch_size,
                                 dropout_w=args.dropout_w,

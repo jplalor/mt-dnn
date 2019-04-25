@@ -3,11 +3,12 @@
 # This script is used to download resources for MT-DNN experiments
 ############################################################## 
 
-DATA_DIR=$(pwd)/data
+TOP_DIR=/mnt/nfs/work1/hongyu/lalor/data/mt-dnn
+DATA_DIR=$TOP_DIR/data
 echo "Create a folder $DATA_DIR"
 mkdir ${DATA_DIR}
 
-BERT_DIR=$(pwd)/mt_dnn_models
+BERT_DIR=$TOP_DIR/mt_dnn_models
 echo "Create a folder BERT_DIR"
 mkdir ${BERT_DIR}
 
