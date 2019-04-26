@@ -1,7 +1,7 @@
 #!/bin/bash
 #
-#SBATCH --output=res_%j.txt  # output file
-#SBATCH -e res_%j.err        # File to which STDERR will be written
+#SBATCH --output=logs/res_%j.txt  # output file
+#SBATCH -e logs/res_%j.err        # File to which STDERR will be written
 #SBATCH --partition=titanx-long # Partition to submit to 
 #
 #SBATCH --ntasks=1
